@@ -15,4 +15,4 @@ def gatewave(frequency, n):
     return 0
 
 def toPCM(value):
-    return math.floor((value + 1) * 65535/2).to_bytes(2, byteorder='little')
+    return math.floor((value) * 65535/2).to_bytes(2, byteorder='little', signed=True)
