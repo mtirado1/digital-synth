@@ -14,5 +14,6 @@ def gatewave(frequency, n):
         return 1
     return 0
 
+# Converts floating point number to 16-bit signed PCM
 def toPCM(value):
     return math.floor((value) * 65535/2).to_bytes(2, byteorder='little', signed=True)

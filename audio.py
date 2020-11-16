@@ -13,7 +13,7 @@ def callback(in_data, frame_count, time_info, flag):
     t += frame_count
     return (k, pyaudio.paContinue)
 
-stream = p.open(format=8,
+stream = p.open(format=p.get_format_from_width(2),
                 channels=1,
                 rate=signals.samplingFrequency,
                 output=True,
