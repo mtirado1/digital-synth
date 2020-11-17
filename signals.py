@@ -1,5 +1,5 @@
 # Signal generation module
-# Are signals are in the range of [-1,1]
+# All signals are in the range of [-1,1]
 import math
 
 samplingFrequency = 44100
@@ -14,6 +14,11 @@ def gatewave(frequency, n):
         return 1
     return 0
 
+def decay(rate, n):
+    return math.e ** -(rate*n/samplingFrequency)
+
 # Converts floating point number to 16-bit signed PCM
 def toPCM(value):
+    if abs(value) < 0.00001:
+        value = 0
     return math.floor((value) * 65535/2).to_bytes(2, byteorder='little', signed=True)

@@ -5,11 +5,17 @@ p = pyaudio.PyAudio()
 
 audioFunction = lambda x: 0
 
+yIndex = 0
+yPrev = [0] * 10
+
 def callback(in_data, frame_count, time_info, flag):
     global t
     k = b''
     for i in range(frame_count):
-        k += signals.toPCM(audioFunction(i+t))
+        y = audioFunction(i+t)
+        yPrev.insert(0, y)
+        yPrev.pop()
+        k += signals.toPCM(y)
     t += frame_count
     return (k, pyaudio.paContinue)
 
