@@ -5,6 +5,7 @@ import math
 samplingFrequency = 44100
 second = samplingFrequency
 
+
 def sinewave(frequency, n):
     return math.sin(2 * math.pi * frequency * n / samplingFrequency)
 
@@ -13,6 +14,22 @@ def gatewave(frequency, n):
     if n % N < N/2:
         return 1
     return 0
+
+def AmplitudeModulation(f1, f2, gain, freq, t):
+    return gain * f2(freq, t) * f1(t)
+
+def FrequencyModulation(f1, f2, gain, freq, t):
+    if f2 == sinewave:
+        return f1(t + samplingFrequency * gain * f2(freq, t)/ 2 / math.pi)
+    else:
+        return f1(t * (1 + gain * f2(freq, t)))
+
+
+oscillators = {'Sine Wave': sinewave} # Signals generators
+modulators = {'Sine Wave': sinewave, 'Gate Wave': gatewave} # AM/FM modulators
+modulationModes = {'AM': AmplitudeModulation, 'FM': FrequencyModulation}
+
+
 
 def decay(rate, n):
     return math.e ** -(rate*n/samplingFrequency)
