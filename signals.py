@@ -32,7 +32,7 @@ modulators = {'Sine Wave': sinewave, 'Gate Wave': gatewave} # AM/FM modulators
 modulationModes = {'AM': AmplitudeModulation, 'FM': FrequencyModulation}
 
 def attack(period, n):
-    v = n/T
+    v = n/period
     if v > 1:
         return 1
     return v

@@ -11,6 +11,7 @@ class Main(QtWidgets.QMainWindow):
         QtWidgets.QMainWindow.__init__(self, parent = None)
         uic.loadUi('main.ui', self)
         self.setWindowTitle('Digital Synthetizer')
+        self.statusbar.showMessage('Sampling Frequency: ' + str(signals.samplingFrequency) + ' Hz')
 
         self.osc1Type.addItems(list(signals.oscillators.keys()))
         self.osc2Type.addItems(list(signals.oscillators.keys()))
@@ -46,12 +47,17 @@ class Main(QtWidgets.QMainWindow):
 
     def getAudioFunction(self,n):
         m1Gain = self.mod1Gain.value()/200
-        m2Gain = self.mod1Gain.value()/200 # 0 - 0.1
+        m2Gain = self.mod2Gain.value()/200 # 0 - 0.1
         m1Freq = self.mod1Freq.value() / 8
         m2Freq = self.mod2Freq.value() / 8
-
-        return signals.modulationModes[self.mod1Mode.currentText()](self.getOscillator, signals.modulators[self.mod1Type.currentText()], m1Gain, m1Freq, n)
-    
+       
+        m1 = self.getOscillator
+        if self.mod1Enable.isChecked():
+            m1 = lambda n: signals.modulationModes[self.mod1Mode.currentText()](self.getOscillator, signals.modulators[self.mod1Type.currentText()], m1Gain, m1Freq, n)
+        m2 = m1
+        if self.mod2Enable.isChecked():
+            m2 = lambda n : signals.modulationModes[self.mod2Mode.currentText()](m1, signals.modulators[self.mod2Type.currentText()], m2Gain, m2Freq, n)
+        return m2(n)
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
