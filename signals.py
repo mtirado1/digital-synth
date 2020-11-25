@@ -31,7 +31,11 @@ oscillators = {'Sine Wave': sinewave} # Signals generators
 modulators = {'Sine Wave': sinewave, 'Gate Wave': gatewave} # AM/FM modulators
 modulationModes = {'AM': AmplitudeModulation, 'FM': FrequencyModulation}
 
-
+def attack(period, n):
+    v = n/T
+    if v > 1:
+        return 1
+    return v
 
 def decay(rate, n):
     return math.e ** -(rate*n/samplingFrequency)
