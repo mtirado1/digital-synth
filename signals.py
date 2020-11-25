@@ -1,7 +1,7 @@
 # Signal generation module
 # All signals are in the range of [-1,1]
 import math
-
+import audio
 samplingFrequency = 44100
 second = samplingFrequency
 
@@ -10,13 +10,15 @@ def sinewave(frequency, n):
     return math.sin(2 * math.pi * frequency * n / samplingFrequency)
 
 def gatewave(frequency, n):
+    if frequency == 0:
+        return 1
     N = samplingFrequency/frequency
     if n % N < N/2:
         return 1
     return 0
 
 def AmplitudeModulation(f1, f2, gain, freq, t):
-    return gain * f2(freq, t) * f1(t)
+    return (1 - abs(gain*f2(freq, t))) * f1(t)
 
 def FrequencyModulation(f1, f2, gain, freq, t):
     if f2 == sinewave:
