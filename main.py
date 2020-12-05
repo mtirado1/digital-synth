@@ -25,12 +25,20 @@ class Main(QtWidgets.QMainWindow):
         self.osc2Gain.valueChanged.connect(self.updateValues)
         self.osc1Freq.valueChanged.connect(self.updateValues)
         self.osc2Freq.valueChanged.connect(self.updateValues)
+        self.mod1Gain.valueChanged.connect(self.updateValues)
+        self.mod1Freq.valueChanged.connect(self.updateValues)
+        self.mod2Gain.valueChanged.connect(self.updateValues)
+        self.mod2Freq.valueChanged.connect(self.updateValues)
 
     def updateValues(self):
         self.osc1GainLabel.setText('Gain: ' + str(self.osc1Gain.value()/100*0.5))
         self.osc2GainLabel.setText('Gain: ' + str(self.osc2Gain.value()/100*0.5))
         self.osc1FreqLabel.setText('Frequency: ' + str(self.osc1Freq.value() / 200 * 4000) + ' Hz')
         self.osc2FreqLabel.setText('Frequency: ' + str(self.osc2Freq.value() / 200 * 4000) + ' Hz')
+        self.mod1GainLabel.setText('Gain: ' + str(self.mod1Gain.value()/200))
+        self.mod2GainLabel.setText('Gain: ' + str(self.mod2Gain.value()/200))
+        self.mod1FreqLabel.setText('Frequency: ' + str(self.mod1Freq.value()/8) + 'Hz')
+        self.mod2FreqLabel.setText('Frequency:' + str(self.mod2Freq.value()/8) + 'Hz')
 
 
     def getOscillator(self,n):

@@ -18,7 +18,7 @@ def gatewave(frequency, n):
     return 0
 
 def AmplitudeModulation(f1, f2, gain, freq, t):
-    return (1 - abs(gain*f2(freq, t))) * f1(t)
+    return (0.5 + 0.5*gain*f2(freq, t)) * f1(t)
 
 def FrequencyModulation(f1, f2, gain, freq, t):
     if f2 == sinewave:
