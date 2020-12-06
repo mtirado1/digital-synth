@@ -73,6 +73,14 @@ class Main(QtWidgets.QMainWindow):
         else:
             return m2(n)
 
+        f1 = lambda n:  signals.highPassFilter(m2, self.highPassFilterGain.value()/200, self.highPassFilterFreq.value()/200, n) 
+        if self.highPassFilterEnable.isChecked():
+            return f1(n)
+        else:
+            return m2(n)
+
+
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     window = Main()
