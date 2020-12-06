@@ -9,13 +9,8 @@ second = samplingFrequency
 def sinewave(frequency, n):
     return math.sin(2 * math.pi * frequency * n / samplingFrequency)
 
-def gatewave(frequency, n):
-    if frequency == 0:
-        return 1
-    N = samplingFrequency/frequency
-    if n % N < N/2:
-        return 1
-    return 0
+def sinewaveIntegral(frequency, n):
+    return 1 - math.cos(2  * math.pi * frequency * n /samplingFrequency)
 
 def squarewave(frequency, n):
     if frequency == 0:
@@ -46,13 +41,13 @@ def AmplitudeModulation(f1, f2, gain, freq, t):
 
 def FrequencyModulation(f1, f2, gain, freq, t):
     if f2 == sinewave:
-        return f1(t + samplingFrequency * gain * f2(freq, t)/ 2 / math.pi)
-    else:
-        return f1(t * (1 + gain * f2(freq, t)))
+        return f1(t +  gain * samplingFrequency * sinewaveIntegral(freq,t) / 10)
+    elif f2 == squarewave:
+        return f1(t + gain * samplingFrequency * (1 + triangularwave(freq,t) / 10))
 
 
 oscillators = {'Sine Wave': sinewave,'Square Wave': squarewave,'Triangular Wave': triangularwave,'Ramp Wave': rampwave} # Signals generators
-modulators = {'Sine Wave': sinewave, 'Gate Wave': gatewave, 'Triangular Wave': triangularwave,'Ramp Wave': rampwave} # AM/FM modulators
+modulators = {'Sine Wave': sinewave, 'Square Wave': squarewave, 'Triangular Wave': triangularwave,'Ramp Wave': rampwave} # AM/FM modulators
 modulationModes = {'AM': AmplitudeModulation, 'FM': FrequencyModulation}
 
 def attack(period, n):
