@@ -59,6 +59,15 @@ def FrequencyModulation(f1, f2, gain, freq, t):
     else:
         return f1(t + samplingFrequency * gain * f2(freq, t) / 10)
 
+def lowPassFilter(x, gain, f, n):
+    # Y(z)/X(z) =  K *   (z+1)*f   /   z + (2f -1)
+    # Y(Z) = K * (z+1)*f * X(Z) /  z + (2f-1)
+    # Y(z) *(z + (2f-1)) = K (z+1)*f * X(z)
+    # Y(z) *(1 + (2f-1)z^(-1) ) = K (1 +z^(-1))*f * X(z)
+    # Y(z) = K (1 + z^(-1))*f * X    - (2f-1)z^(-1) Y(z)
+    return gain * f * (x(n) + x(n-1)) - (2*f-1) * audio.yPrev[0]
+
+
 oscillators = {'Sine Wave': sinewave,'Square Wave': squarewave,'Triangular Wave': triangularwave,'Ramp Wave': rampwave,'Noise Wave': noisewave} # Signals generators
 modulators = {'Sine Wave': sinewave, 'Square Wave': squarewave, 'Triangular Wave': triangularwave,'Ramp Wave': rampwave} # AM/FM modulators
 modulationModes = {'AM': AmplitudeModulation, 'FM': FrequencyModulation}

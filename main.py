@@ -65,7 +65,13 @@ class Main(QtWidgets.QMainWindow):
         m2 = m1
         if self.mod2Enable.isChecked():
             m2 = lambda n : signals.modulationModes[self.mod2Mode.currentText()](m1, signals.modulators[self.mod2Type.currentText()], m2Gain, m2Freq, n)
-        return m2(n)
+        
+        # Filters
+        f1 = lambda n:  signals.lowPassFilter(m2, self.lowPassFilterGain.value()/200, self.lowPassFilterFreq.value()/200, n) 
+        if self.lowPassFilterEnable.isChecked():
+            return f1(n)
+        else:
+            return m2(n)
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)

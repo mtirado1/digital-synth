@@ -400,7 +400,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBox_2">
+       <widget class="QCheckBox" name="lowPassFilterEnable">
         <property name="text">
          <string>Enabled</string>
         </property>
@@ -409,7 +409,7 @@
       <item>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QSlider" name="verticalSlider">
+         <widget class="QSlider" name="lowPassFilterGain">
           <property name="maximum">
            <number>200</number>
           </property>
@@ -428,7 +428,7 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QDial" name="dial">
+         <widget class="QDial" name="lowPassFilterFreq">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
             <horstretch>0</horstretch>
