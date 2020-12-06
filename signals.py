@@ -17,6 +17,30 @@ def gatewave(frequency, n):
         return 1
     return 0
 
+def squarewave(frequency, n):
+    if frequency == 0:
+        return 1
+    N = samplingFrequency/frequency
+    if n % N < N/2:
+        return 1
+    return -1
+
+def triangularwave(frequency, n):
+    if frequency == 0:
+        return 1
+    N = samplingFrequency/frequency
+    k = n%N
+    if n % N < N/2:
+        return 1 + (k*(-2/(N/2)))
+    return -1 + ((k-N/2)*(2/(N/2)))
+
+def rampwave(frequency, n):
+    if frequency == 0:
+        return 1
+    N = samplingFrequency/frequency
+    k = n%N
+    return 1 + (k*(-2/N))
+
 def AmplitudeModulation(f1, f2, gain, freq, t):
     return (0.5 + 0.5*gain*f2(freq, t)) * f1(t)
 
@@ -27,8 +51,8 @@ def FrequencyModulation(f1, f2, gain, freq, t):
         return f1(t * (1 + gain * f2(freq, t)))
 
 
-oscillators = {'Sine Wave': sinewave} # Signals generators
-modulators = {'Sine Wave': sinewave, 'Gate Wave': gatewave} # AM/FM modulators
+oscillators = {'Sine Wave': sinewave,'Square Wave': squarewave,'Triangular Wave': triangularwave,'Ramp Wave': rampwave} # Signals generators
+modulators = {'Sine Wave': sinewave, 'Gate Wave': gatewave, 'Triangular Wave': triangularwave,'Ramp Wave': rampwave} # AM/FM modulators
 modulationModes = {'AM': AmplitudeModulation, 'FM': FrequencyModulation}
 
 def attack(period, n):
