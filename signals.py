@@ -2,6 +2,7 @@
 # All signals are in the range of [-1,1]
 import math
 import audio
+import random
 samplingFrequency = 44100
 second = samplingFrequency
 
@@ -41,6 +42,9 @@ def rampwave(frequency, n):
     k = n%N
     return 1 + (k*(-2/N))
 
+def noisewave(frequency, n):
+    return random.random()
+
 def AmplitudeModulation(f1, f2, gain, freq, t):
     return (0.5 + 0.5*gain*f2(freq, t)) * f1(t)
 
@@ -51,7 +55,7 @@ def FrequencyModulation(f1, f2, gain, freq, t):
         return f1(t * (1 + gain * f2(freq, t)))
 
 
-oscillators = {'Sine Wave': sinewave,'Square Wave': squarewave,'Triangular Wave': triangularwave,'Ramp Wave': rampwave} # Signals generators
+oscillators = {'Sine Wave': sinewave,'Square Wave': squarewave,'Triangular Wave': triangularwave,'Ramp Wave': rampwave,'Noise Wave': noisewave} # Signals generators
 modulators = {'Sine Wave': sinewave, 'Gate Wave': gatewave, 'Triangular Wave': triangularwave,'Ramp Wave': rampwave} # AM/FM modulators
 modulationModes = {'AM': AmplitudeModulation, 'FM': FrequencyModulation}
 
