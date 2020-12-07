@@ -67,6 +67,15 @@ def lowPassFilter(x, gain, f, n):
     # Y(z) = K (1 + z^(-1))*f * X    - (2f-1)z^(-1) Y(z)
     return gain * f * (x(n) + x(n-1)) - (2*f-1) * audio.yPrev[0]
 
+def highPassFilter(x, gain, f, n):
+    # Y(z)/X(z) =  K * (z-1)*(1-f) / z + (2f -1)
+    # Y(Z) = K * (z-1)*(1-f) * X(Z) /  z + (2f-1)
+    # Y(z) *(z + (2f-1)) = K (z-1)*(1-f) * X(z)
+    # Y(z) *(1 + (2f-1)z^-1) = K (1-z^-1)*(1-f) * X(z)
+    # Y(z) = K (X(z)-X(z-1))*(1-f) - (2f-1)Y(z-1)
+
+    return gain * (1-f) * (x(n) - x(n-1)) - (2*f-1) * audio.yPrev[0]
+
 
 oscillators = {'Sine Wave': sinewave,'Square Wave': squarewave,'Triangular Wave': triangularwave,'Ramp Wave': rampwave,'Noise Wave': noisewave} # Signals generators
 modulators = {'Sine Wave': sinewave, 'Square Wave': squarewave, 'Triangular Wave': triangularwave,'Ramp Wave': rampwave} # AM/FM modulators
