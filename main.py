@@ -47,10 +47,6 @@ class Main(QtWidgets.QMainWindow):
             y += self.osc1Gain.value()/200 * signals.oscillators[self.osc1Type.currentText()](self.osc1Freq.value() / 200 * 4000, n)
         if self.osc2Enable.isChecked():
             y += self.osc2Gain.value()/200 * signals.oscillators[self.osc2Type.currentText()](self.osc2Freq.value() / 200 * 4000, n)
-        if y < -1:
-            return -1
-        if y > 1:
-            return 1
         return y
 
     def getAudioFunction(self,n):
@@ -75,12 +71,16 @@ class Main(QtWidgets.QMainWindow):
             f1 = lambda n: signals.lowPassFilter(m2, self.lowPassFilterGain.value()/200, self.lowPassFilterFreq.value()/200, n)
         
         # High pass filter
-        f2 = lambda n: signals.highPassFilter(f1, self.highPassFilterGain.value()/200, self.highPassFilterFreq.value()/200, n)
+        f2 = f1
         if self.highPassFilterEnable.isChecked():
-            return f2(n)
-        else:
-            return f1(n)
+            f2 = lambda n: signals.highPassFilter(f1, self.highPassFilterGain.value()/200, self.highPassFilterFreq.value()/200, n)
 
+        y = f2(n)
+        if y < -1:
+            return -1
+        if y > 1:
+            return 1
+        return y
 
 
 if __name__ == '__main__':
