@@ -59,25 +59,27 @@ class Main(QtWidgets.QMainWindow):
         m1Freq = self.mod1Freq.value() / 8
         m2Freq = self.mod2Freq.value() / 8
        
+        # Modulator 1
         m1 = self.getOscillator
         if self.mod1Enable.isChecked():
             m1 = lambda n: signals.modulationModes[self.mod1Mode.currentText()](self.getOscillator, signals.modulators[self.mod1Type.currentText()], m1Gain, m1Freq, n)
+        
+        # Modulator 2
         m2 = m1
         if self.mod2Enable.isChecked():
             m2 = lambda n : signals.modulationModes[self.mod2Mode.currentText()](m1, signals.modulators[self.mod2Type.currentText()], m2Gain, m2Freq, n)
         
-        # Filters
-        f1 = lambda n:  signals.lowPassFilter(m2, self.lowPassFilterGain.value()/200, self.lowPassFilterFreq.value()/200, n) 
+        # Low pass filter
+        f1 = m2
         if self.lowPassFilterEnable.isChecked():
-            return f1(n)
-        else:
-            return m2(n)
-
-        f1 = lambda n:  signals.highPassFilter(m2, self.highPassFilterGain.value()/200, self.highPassFilterFreq.value()/200, n) 
+            f1 = lambda n: signals.lowPassFilter(m2, self.lowPassFilterGain.value()/200, self.lowPassFilterFreq.value()/200, n)
+        
+        # High pass filter
+        f2 = lambda n: signals.highPassFilter(f1, self.highPassFilterGain.value()/200, self.highPassFilterFreq.value()/200, n)
         if self.highPassFilterEnable.isChecked():
-            return f1(n)
+            return f2(n)
         else:
-            return m2(n)
+            return f1(n)
 
 
 
