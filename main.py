@@ -13,6 +13,7 @@ class Main(QtWidgets.QMainWindow):
         self.setWindowTitle('Digital Synthetizer')
         self.statusbar.showMessage('Sampling Frequency: ' + str(signals.samplingFrequency) + ' Hz')
 
+        # UI Signals
         self.osc1Type.addItems(list(signals.oscillators.keys()))
         self.osc2Type.addItems(list(signals.oscillators.keys()))
         
@@ -21,14 +22,23 @@ class Main(QtWidgets.QMainWindow):
         self.mod2Mode.addItems(list(signals.modulationModes.keys()))
         self.mod2Type.addItems(list(signals.modulators.keys()))
 
-        self.osc1Gain.valueChanged.connect(self.updateValues)
-        self.osc2Gain.valueChanged.connect(self.updateValues)
-        self.osc1Freq.valueChanged.connect(self.updateValues)
-        self.osc2Freq.valueChanged.connect(self.updateValues)
-        self.mod1Gain.valueChanged.connect(self.updateValues)
-        self.mod1Freq.valueChanged.connect(self.updateValues)
-        self.mod2Gain.valueChanged.connect(self.updateValues)
-        self.mod2Freq.valueChanged.connect(self.updateValues)
+        self.osc1Enable.stateChanged.connect(self.updateModules)
+        self.osc2Enable.stateChanged.connect(self.updateModules)
+        
+        self.osc1Type.currentIndexChanged.connect(self.updateModules)
+        self.osc2Type.currentIndexChanged.connect(self.updateModules)
+
+        controls = [self.osc1Gain, self.osc1Freq, self.osc2Gain, self.osc2Freq,
+                    self.mod1Gain, self.mod1Freq, self.mod2Gain, self.mod2Freq]
+        for c in controls:
+            c.valueChanged.connect(self.updateValues)
+
+        self.osc1 = signals.Oscillator(None, 0, 0, False)
+        self.osc2 = signals.Oscillator(None, 0, 0, False)
+        self.updateModules()
+
+
+
 
     def updateValues(self):
         self.osc1GainLabel.setText('Gain: ' + str(self.osc1Gain.value()/100*0.5))
@@ -39,15 +49,18 @@ class Main(QtWidgets.QMainWindow):
         self.mod2GainLabel.setText('Gain: ' + str(self.mod2Gain.value()/200))
         self.mod1FreqLabel.setText('Frequency: ' + str(self.mod1Freq.value()/8) + 'Hz')
         self.mod2FreqLabel.setText('Frequency:' + str(self.mod2Freq.value()/8) + 'Hz')
+        self.updateModules()
 
+    def updateModules(self):
+        self.osc1.function = signals.oscillators[self.osc1Type.currentText()]
+        self.osc1.gain = self.osc1Gain.value() / 200
+        self.osc1.frequency = self.osc1Freq.value() / 200 * 4000
+        self.osc1.enabled = self.osc1Enable.isChecked()
 
-    def getOscillator(self,n):
-        y = 0
-        if self.osc1Enable.isChecked():
-            y += self.osc1Gain.value()/200 * signals.oscillators[self.osc1Type.currentText()](self.osc1Freq.value() / 200 * 4000, n)
-        if self.osc2Enable.isChecked():
-            y += self.osc2Gain.value()/200 * signals.oscillators[self.osc2Type.currentText()](self.osc2Freq.value() / 200 * 4000, n)
-        return y
+        self.osc2.function = signals.oscillators[self.osc2Type.currentText()]
+        self.osc2.gain = self.osc2Gain.value() / 200
+        self.osc2.frequency = self.osc2Freq.value() / 200 * 4000
+        self.osc2.enabled = self.osc2Enable.isChecked()
 
     def getAudioFunction(self,n):
         m1Gain = self.mod1Gain.value()/200
@@ -56,7 +69,7 @@ class Main(QtWidgets.QMainWindow):
         m2Freq = self.mod2Freq.value() / 8
        
         # Modulator 1
-        m1 = self.getOscillator
+        m1 = lambda n: self.osc1.value(n) + self.osc2.value(n) 
         if self.mod1Enable.isChecked():
             m1 = lambda n: signals.modulationModes[self.mod1Mode.currentText()](self.getOscillator, signals.modulators[self.mod1Type.currentText()], m1Gain, m1Freq, n)
         

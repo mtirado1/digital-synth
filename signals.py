@@ -6,6 +6,16 @@ import random
 samplingFrequency = 44100
 second = samplingFrequency
 
+class Oscillator:
+    def __init__(self, function, gain, frequency, enabled):
+        self.function = function
+        self.gain = gain
+        self.frequency = frequency
+        self.enabled = False
+    def value(self, n):
+        if self.enabled:
+            return self.gain * self.function(self.frequency, n)
+        return 0
 
 def sinewave(frequency, n):
     return math.sin(2 * math.pi * frequency * n / samplingFrequency)
