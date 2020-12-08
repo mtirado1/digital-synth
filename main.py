@@ -10,8 +10,8 @@ class Main(QtWidgets.QMainWindow):
     def __init__(self):
         QtWidgets.QMainWindow.__init__(self, parent = None)
         uic.loadUi('main.ui', self)
-        self.setWindowTitle('Digital Synthetizer')
-        self.statusbar.showMessage('Sampling Frequency: ' + str(signals.samplingFrequency) + ' Hz')
+        self.setWindowTitle('Digital Synthetizer') # Assigns a title fot the window
+        self.statusbar.showMessage('Sampling Frequency: ' + str(signals.samplingFrequency) + ' Hz') #Displays the system's sampling frequency
 
         # UI Signals
         self.osc1Type.addItems(list(signals.oscillators.keys()))
@@ -51,6 +51,7 @@ class Main(QtWidgets.QMainWindow):
 
 
 
+    #Displays the current values of each variable
     def updateValues(self):
         self.osc1GainLabel.setText('Gain: ' + str(self.osc1Gain.value()/100*0.5))
         self.osc2GainLabel.setText('Gain: ' + str(self.osc2Gain.value()/100*0.5))
