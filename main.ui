@@ -395,12 +395,12 @@
       <item>
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>High Pass Filter</string>
+         <string>Low Pass Filter</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBox_2">
+       <widget class="QCheckBox" name="lowPassFilterEnable">
         <property name="text">
          <string>Enabled</string>
         </property>
@@ -409,7 +409,7 @@
       <item>
        <layout class="QGridLayout" name="gridLayout_5">
         <item row="0" column="0">
-         <widget class="QSlider" name="verticalSlider">
+         <widget class="QSlider" name="lowPassFilterGain">
           <property name="maximum">
            <number>200</number>
           </property>
@@ -428,7 +428,7 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QDial" name="dial">
+         <widget class="QDial" name="lowPassFilterFreq">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -487,12 +487,12 @@
       <item>
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Low Pass Filter</string>
+         <string>High Pass Filter</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="checkBox">
+       <widget class="QCheckBox" name="highPassFilterEnable">
         <property name="text">
          <string>Enabled</string>
         </property>
@@ -511,7 +511,7 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QDial" name="dial_2">
+         <widget class="QDial" name="highPassFilterFreq">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
             <horstretch>0</horstretch>
@@ -539,7 +539,7 @@
          </widget>
         </item>
         <item row="0" column="0">
-         <widget class="QSlider" name="verticalSlider_2">
+         <widget class="QSlider" name="highPassFilterGain">
           <property name="maximum">
            <number>200</number>
           </property>
