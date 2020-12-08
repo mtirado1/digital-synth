@@ -6,6 +6,8 @@ import random
 samplingFrequency = 44100
 second = samplingFrequency
 
+# Modules
+
 class Oscillator:
     def __init__(self, function, gain, frequency, enabled):
         self.function = function
@@ -16,6 +18,20 @@ class Oscillator:
         if self.enabled:
             return self.gain * self.function(self.frequency, n)
         return 0
+
+class Modulator:
+    def __init__(self, mode, function, gain, frequency, enabled):
+        self.modulationMode = mode
+        self.function = function
+        self.frequency = frequency
+        self.enabled = False
+    def value(self, f, n):
+        if self.enabled:
+            return self.modulationMode(f, self.function, self.gain, self.frequency, n)
+        return f(n)
+
+
+# Signals
 
 def sinewave(frequency, n):
     return math.sin(2 * math.pi * frequency * n / samplingFrequency)

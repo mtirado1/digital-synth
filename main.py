@@ -24,9 +24,16 @@ class Main(QtWidgets.QMainWindow):
 
         self.osc1Enable.stateChanged.connect(self.updateModules)
         self.osc2Enable.stateChanged.connect(self.updateModules)
-        
+        self.mod1Enable.stateChanged.connect(self.updateModules)
+        self.mod2Enable.stateChanged.connect(self.updateModules)
+
         self.osc1Type.currentIndexChanged.connect(self.updateModules)
         self.osc2Type.currentIndexChanged.connect(self.updateModules)
+        
+        self.mod1Type.currentIndexChanged.connect(self.updateModules)
+        self.mod2Type.currentIndexChanged.connect(self.updateModules)
+        self.mod1Mode.currentIndexChanged.connect(self.updateModules)
+        self.mod2Mode.currentIndexChanged.connect(self.updateModules)
 
         controls = [self.osc1Gain, self.osc1Freq, self.osc2Gain, self.osc2Freq,
                     self.mod1Gain, self.mod1Freq, self.mod2Gain, self.mod2Freq]
@@ -35,8 +42,10 @@ class Main(QtWidgets.QMainWindow):
 
         self.osc1 = signals.Oscillator(None, 0, 0, False)
         self.osc2 = signals.Oscillator(None, 0, 0, False)
-        self.updateModules()
 
+        self.mod1 = signals.Modulator(None, None, 0, 0, False)
+        self.mod2 = signals.Modulator(None, None, 0, 0, False)
+        self.updateModules()
 
 
 
@@ -62,26 +71,28 @@ class Main(QtWidgets.QMainWindow):
         self.osc2.frequency = self.osc2Freq.value() / 200 * 4000
         self.osc2.enabled = self.osc2Enable.isChecked()
 
+        self.mod1.modulationMode = signals.modulationModes[self.mod1Mode.currentText()]
+        self.mod1.function = signals.modulators[self.mod1Type.currentText()]
+        self.mod1.gain = self.mod1Gain.value()/200
+        self.mod1.frequency = self.mod1Freq.value() / 8
+        self.mod1.enabled = self.mod1Enable.isChecked()
+
+        self.mod2.modulationMode = signals.modulationModes[self.mod2Mode.currentText()]
+        self.mod2.function = signals.modulators[self.mod2Type.currentText()]
+        self.mod2.gain = self.mod2Gain.value()/200
+        self.mod2.frequency = self.mod2Freq.value() / 8
+        self.mod2.enabled = self.mod2Enable.isChecked()
+
     def getAudioFunction(self,n):
-        m1Gain = self.mod1Gain.value()/200
-        m2Gain = self.mod2Gain.value()/200 # 0 - 0.1
-        m1Freq = self.mod1Freq.value() / 8
-        m2Freq = self.mod2Freq.value() / 8
-       
-        # Modulator 1
-        m1 = lambda n: self.osc1.value(n) + self.osc2.value(n) 
-        if self.mod1Enable.isChecked():
-            m1 = lambda n: signals.modulationModes[self.mod1Mode.currentText()](self.getOscillator, signals.modulators[self.mod1Type.currentText()], m1Gain, m1Freq, n)
+
+        oscillatorSignal = lambda n: self.osc1.value(n) + self.osc2.value(n)
         
-        # Modulator 2
-        m2 = m1
-        if self.mod2Enable.isChecked():
-            m2 = lambda n : signals.modulationModes[self.mod2Mode.currentText()](m1, signals.modulators[self.mod2Type.currentText()], m2Gain, m2Freq, n)
-        
+        modulatedSignal = lambda n: self.mod2.value(lambda n: self.mod1.value(oscillatorSignal, n), n)
+
         # Low pass filter
-        f1 = m2
+        f1 = modulatedSignal
         if self.lowPassFilterEnable.isChecked():
-            f1 = lambda n: signals.lowPassFilter(m2, self.lowPassFilterGain.value()/200, self.lowPassFilterFreq.value()/200, n)
+            f1 = lambda n: signals.lowPassFilter(modulatedSignal, self.lowPassFilterGain.value()/200, self.lowPassFilterFreq.value()/200, n)
         
         # High pass filter
         f2 = f1
