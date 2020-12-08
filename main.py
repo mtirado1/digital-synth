@@ -35,8 +35,10 @@ class Main(QtWidgets.QMainWindow):
         self.mod1Mode.currentIndexChanged.connect(self.updateModules)
         self.mod2Mode.currentIndexChanged.connect(self.updateModules)
 
+
         controls = [self.osc1Gain, self.osc1Freq, self.osc2Gain, self.osc2Freq,
-                    self.mod1Gain, self.mod1Freq, self.mod2Gain, self.mod2Freq]
+                    self.mod1Gain, self.mod1Freq, self.mod2Gain, self.mod2Freq,
+                    self.masterGain]
         for c in controls:
             c.valueChanged.connect(self.updateValues)
 
@@ -58,6 +60,8 @@ class Main(QtWidgets.QMainWindow):
         self.mod2GainLabel.setText('Gain: ' + str(self.mod2Gain.value()/200))
         self.mod1FreqLabel.setText('Frequency: ' + str(self.mod1Freq.value()/8) + 'Hz')
         self.mod2FreqLabel.setText('Frequency:' + str(self.mod2Freq.value()/8) + 'Hz')
+        
+        self.masterGainLabel.setText('Master Volume: ' + str(self.masterGain.value()/2) + '%')
         self.updateModules()
 
     def updateModules(self):
@@ -99,7 +103,7 @@ class Main(QtWidgets.QMainWindow):
         if self.highPassFilterEnable.isChecked():
             f2 = lambda n: signals.highPassFilter(f1, self.highPassFilterGain.value()/200, self.highPassFilterFreq.value()/200, n)
 
-        y = f2(n)
+        y = self.masterGain.value()/200 * f2(n)
         if y < -1:
             return -1
         if y > 1:

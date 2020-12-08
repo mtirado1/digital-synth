@@ -64,12 +64,28 @@ def triangularwave(frequency, n):
         return 1 + (k*(-2/(N/2)))
     return -1 + ((k-N/2)*(2/(N/2)))
 
+def triangularwaveIntegral(frequency, n):
+    if frequency == 0:
+        return 0
+    N = samplingFrequency/frequency
+    k = n%N
+    if k < N/2:
+        return k - k*k/(N/2)
+    return -(k-N/2) + (k - N/2) * (k - N/2) / (N/2)
+
 def rampwave(frequency, n):
     if frequency == 0:
         return 1
     N = samplingFrequency/frequency
     k = n%N
     return 1 + (k*(-2/N))
+
+def rampwaveIntegral(frequency, n):
+    if frequency == 0:
+        return 1
+    N = samplingFrequency/frequency
+    k = n%N
+    return k + k*k/N
 
 def noisewave(frequency, n):
     return random.random()
@@ -82,8 +98,10 @@ def FrequencyModulation(f1, f2, gain, freq, t):
         return f1(t + samplingFrequency * gain * sinewaveIntegral(freq, t) / 10)
     elif f2 == squarewave:
         return f1(t + samplingFrequency * gain * triangularwave(freq, t) / 10)
-    else:
-        return f1(t + samplingFrequency * gain * f2(freq, t) / 10)
+    elif f2 == triangularwave:
+        return f1(t +  gain * triangularwaveIntegral(freq, t))
+    elif f2 == rampwave:
+        return f1(t +  gain * rampwaveIntegral(freq, t))
 
 def lowPassFilter(x, gain, f, n):
     # Y(z)/X(z) =  K *   (z+1)*f   /   z + (2f -1)
